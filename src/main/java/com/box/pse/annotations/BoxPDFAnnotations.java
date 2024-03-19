@@ -33,13 +33,15 @@ import java.util.UUID;
 
 public class BoxPDFAnnotations {
 	public static void main(String[] args) throws Exception {
-
-		Reader reader = new FileReader("config.json");
+		String userId = args[0];
+		String fileId = args[1];
+		String configFile = args[2];
+		Reader reader = new FileReader(configFile);
 		BoxConfig config = BoxConfig.readFrom(reader);
 
-		final BoxAPIConnection api = BoxDeveloperEditionAPIConnection.getUserConnection("3561743217", config, null);
+		final BoxAPIConnection api = BoxDeveloperEditionAPIConnection.getUserConnection(userId, config, null);
 		//Get document
-		BoxFile file = new BoxFile(api,"1200810605005");
+		BoxFile file = new BoxFile(api,fileId);
 		File tempFile = File.createTempFile(UUID.randomUUID().toString(),"pdf");
 		FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
 		file.download(fileOutputStream);
@@ -170,22 +172,13 @@ public class BoxPDFAnnotations {
 					}
 					annotations.add(freehand);
 				}
-				// Setup some basic reusable objects/constants
-				// Annotations themselves can only be used once!
-
-
-
-
-
-
+				//Construct annotations - is this still needed in this version?
 				for (Object ann : annotations) {
 					((PDAnnotation) ann).constructAppearances(document);
 				}
 
-				// Finally all done
 			}
-
-
+			//Save output document
 			document.save("./test.pdf");
 		}
 		finally
